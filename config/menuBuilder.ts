@@ -7,11 +7,11 @@ import { Globe } from 'lucide-vue-next'
  */
 export class LanguageMenuBuilder extends MenuBuilder {
   build(menu: MenuItemConfig, menuName: string): MenuItemConfig {
-    if (menuName !== 'admin') {
+    if (menuName !== 'settings') {
       return menu
     }
 
-    // Add language management to the menu
+    // Add language management to the settings menu
     this.addMenuItem(menu, {
       id: 'languages',
       title: 'Nyelvek',
