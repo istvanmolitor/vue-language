@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Language } from '../services/languageService'
-import Button from '@admin/components/ui/button/Button.vue'
+import { Button } from '@admin'
 
 const props = defineProps<{
   languages: Language[]

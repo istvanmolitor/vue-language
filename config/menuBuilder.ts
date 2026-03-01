@@ -7,7 +7,7 @@ import { Globe } from 'lucide-vue-next'
  */
 export class LanguageMenuBuilder extends MenuBuilder {
   build(menu: MenuItemConfig, menuName: string): MenuItemConfig {
-    if (menuName !== 'settings') {
+    if (menuName !== 'admin') {
       return menu
     }
 

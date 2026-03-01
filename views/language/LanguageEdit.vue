@@ -1,15 +1,5 @@
 <script setup lang="ts">
-import AdminLayout from '@admin/components/layout/DashboardLayout.vue'
-import Button from '@admin/components/ui/button/Button.vue'
-import Input from '@admin/components/ui/Input.vue'
-import Card from '@admin/components/ui/Card.vue'
-import CardContent from '@admin/components/ui/CardContent.vue'
-import CardDescription from '@admin/components/ui/CardDescription.vue'
-import CardFooter from '@admin/components/ui/CardFooter.vue'
-import CardHeader from '@admin/components/ui/CardHeader.vue'
-import CardTitle from '@admin/components/ui/CardTitle.vue'
-import Checkbox from '@admin/components/ui/Checkbox.vue'
-import FormButtons from '@admin/components/ui/button/FormButtons.vue'
+import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons } from '@admin'
 import TranslationRepeater from '../../components/TranslationRepeater.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { reactive, ref, onMounted } from 'vue'
@@ -99,7 +89,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AdminLayout>
+  <AdminLayout pageTitle="Nyelv szerkesztése">
     <div class="flex items-center justify-between space-y-2 mb-4">
       <h2 class="text-3xl font-bold tracking-tight">Nyelv szerkesztése</h2>
       <Button variant="outline" @click="goBack">Vissza</Button>
@@ -121,7 +111,7 @@ onMounted(() => {
             <Input id="code" v-model="form.code" placeholder="hu" />
           </div>
           <div class="flex items-center space-x-2 pt-8">
-            <Checkbox id="enabled" :checked="form.enabled" @update:checked="(v) => form.enabled = v" />
+            <Checkbox id="enabled" :checked="form.enabled" @update:checked="(v: boolean) => form.enabled = v" />
             <label for="enabled" class="text-sm font-medium">Engedélyezve</label>
           </div>
         </div>

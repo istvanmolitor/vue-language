@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import AdminLayout from '@admin/components/layout/DashboardLayout.vue'
-import Button from '@admin/components/ui/button/Button.vue'
-import Icon from '@admin/components/ui/Icon.vue'
-import RowActions from '@admin/components/ui/RowActions.vue'
-import DataTable, { type Column, type PaginationMeta } from '@admin/components/DataTable.vue'
+import { AdminLayout, Button, Icon } from '@admin'
+import EditButton from '@admin/components/ui/button/EditButton.vue'
+import DeleteButton from '@admin/components/ui/button/DeleteButton.vue'
+import DataTable, { type Column, type PaginationMeta } from '@admin/components/ui/dataTable/DataTable.vue'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { languageService, type Language } from '../../services/languageService'
 
 const router = useRouter()
@@ -55,10 +54,18 @@ const deleteLanguage = async (id: number) => {
 const editLanguage = (id: number) => {
   router.push(`/languages/${id}/edit`)
 }
+
+onMounted(() => {
+  fetchLanguages({
+    page: 1,
+    sort: 'code',
+    direction: 'asc'
+  })
+})
 </script>
 
 <template>
-  <AdminLayout>
+  <AdminLayout pageTitle="Nyelvek">
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-3xl font-bold tracking-tight">Nyelvek</h2>
     </div>
@@ -91,10 +98,8 @@ const editLanguage = (id: number) => {
       </template>
 
       <template #row-actions="{ row }">
-        <RowActions
-          @edit="editLanguage(row.id!)"
-          @delete="deleteLanguage(row.id!)"
-        />
+        <EditButton @click="editLanguage(row.id!)" />
+        <DeleteButton @click="deleteLanguage(row.id!)" />
       </template>
 
       <template #empty>
