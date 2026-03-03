@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons } from '@admin'
+import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, Label } from '@admin'
 import TranslationRepeater from '../../components/TranslationRepeater.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { reactive, ref, onMounted } from 'vue'
@@ -106,12 +106,12 @@ onMounted(() => {
       <CardContent class="space-y-6">
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-2">
-            <label for="code" class="text-sm font-medium">Kód (pl. hu, en)</label>
+            <Label for="code" class="text-sm font-medium">Kód (pl. hu, en)</Label>
             <Input id="code" v-model="form.code" placeholder="hu" />
           </div>
           <div class="flex items-center space-x-2 pt-8">
             <Checkbox id="enabled" :checked="form.enabled" @update:checked="(v: boolean) => form.enabled = v" />
-            <label for="enabled" class="text-sm font-medium">Engedélyezve</label>
+            <Label for="enabled" class="text-sm font-medium">Engedélyezve</Label>
           </div>
         </div>
 
@@ -125,7 +125,7 @@ onMounted(() => {
           >
             <template #default="{ language }">
               <div class="space-y-2" v-if="language.id">
-                <label :for="'lang-' + language.id" class="text-sm font-medium">Név</label>
+                <Label :for="'lang-' + language.id" class="text-sm font-medium">Név</Label>
                 <Input :id="'lang-' + language.id" v-model="getTranslation(language.id).name" />
               </div>
             </template>
