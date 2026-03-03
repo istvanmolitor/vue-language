@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { AdminLayout, Button, Icon } from '@admin'
-import EditButton from '@admin/components/ui/button/EditButton.vue'
-import DeleteButton from '@admin/components/ui/button/DeleteButton.vue'
+import { AdminLayout, EditButton, DeleteButton, CreateButton } from '@admin'
 import DataTable, { type Column, type PaginationMeta } from '@admin/components/ui/dataTable/DataTable.vue'
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { languageService, type Language } from '../../services/languageService'
-import {CreateButton} from "@admin/components/ui/button";
 
 const router = useRouter()
 const languages = ref<Language[]>([])
@@ -72,7 +69,6 @@ onMounted(() => {
       :data="languages"
       :loading="isLoading"
       :pagination="pagination"
-      :searchable="true"
       search-placeholder="Keresés kód vagy név alapján..."
       default-sort="code"
       default-direction="asc"
@@ -93,7 +89,7 @@ onMounted(() => {
 
       <template #row-actions="{ row }">
         <EditButton @click="editLanguage(row.id!)" />
-        <DeleteButton @click="deleteLanguage(row.id!)" />
+        <DeleteButton @confirm="deleteLanguage(row.id!)" />
       </template>
 
       <template #empty>
