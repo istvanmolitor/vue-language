@@ -6,6 +6,7 @@ import DataTable, { type Column, type PaginationMeta } from '@admin/components/u
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { languageService, type Language } from '../../services/languageService'
+import {CreateButton} from "@admin/components/ui/button";
 
 const router = useRouter()
 const languages = ref<Language[]>([])
@@ -66,10 +67,6 @@ onMounted(() => {
 
 <template>
   <AdminLayout pageTitle="Nyelvek">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-3xl font-bold tracking-tight">Nyelvek</h2>
-    </div>
-
     <DataTable
       :columns="columns"
       :data="languages"
@@ -82,10 +79,7 @@ onMounted(() => {
       @fetch="fetchLanguages"
     >
       <template #actions>
-        <Button @click="router.push('/languages/create')">
-          <Icon name="plus" :size="16" class="mr-2" />
-          Új nyelv
-        </Button>
+        <CreateButton to="/languages/create">Új nyelv</CreateButton>
       </template>
 
       <template #cell-enabled="{ row }">
