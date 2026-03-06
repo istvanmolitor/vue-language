@@ -1,4 +1,4 @@
-import { MenuBuilder, type MenuItemConfig } from '@menu/types/menu'
+import { MenuBuilder, type MenuItemConfig } from '@menu/index'
 import { Globe } from 'lucide-vue-next'
 
 /**
@@ -15,7 +15,7 @@ export class LanguageMenuBuilder extends MenuBuilder {
     this.addMenuItem(menu, {
       id: 'languages',
       title: 'Nyelvek',
-      path: '/languages',
+      path: '/admin/language',
       icon: Globe,
       order: 30
     })
@@ -23,4 +23,7 @@ export class LanguageMenuBuilder extends MenuBuilder {
     return menu
   }
 }
+
+// Export singleton instance
+export const languageMenuBuilder = new LanguageMenuBuilder()
 

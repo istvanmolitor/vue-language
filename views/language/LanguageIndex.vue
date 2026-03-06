@@ -50,7 +50,7 @@ const deleteLanguage = async (id: number) => {
 }
 
 const editLanguage = (id: number) => {
-  router.push(`/languages/${id}/edit`)
+  router.push(`/admin/language/${id}/edit`)
 }
 
 onMounted(() => {
@@ -75,7 +75,7 @@ onMounted(() => {
       @fetch="fetchLanguages"
     >
       <template #actions>
-        <CreateButton to="/languages/create">Új nyelv</CreateButton>
+        <CreateButton to="/admin/language/create">Új nyelv</CreateButton>
       </template>
 
       <template #cell-enabled="{ row }">

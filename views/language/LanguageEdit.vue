@@ -64,7 +64,7 @@ const handleSubmit = async () => {
     isSaving.value = true
     const id = route.params.id as string
     await languageService.update(id, form)
-    router.push('/languages')
+    router.push('/admin/language')
   } catch (error) {
     console.error('Hiba a nyelv frissítésekor:', error)
   } finally {
@@ -73,7 +73,7 @@ const handleSubmit = async () => {
 }
 
 const goBack = () => {
-  router.push('/languages')
+  router.push('/admin/language')
 }
 
 const getTranslation = (id: number) => {

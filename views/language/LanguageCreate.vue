@@ -55,7 +55,7 @@ const handleSubmit = async () => {
   try {
     isSaving.value = true
     await languageService.create(form)
-    router.push('/languages')
+    router.push('/admin/language')
   } catch (error) {
     console.error('Hiba a nyelv létrehozásakor:', error)
   } finally {
@@ -64,7 +64,7 @@ const handleSubmit = async () => {
 }
 
 const goBack = () => {
-  router.push('/languages')
+  router.push('/admin/language')
 }
 
 const getTranslation = (id: number) => {
