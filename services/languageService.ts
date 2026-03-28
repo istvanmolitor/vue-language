@@ -1,4 +1,5 @@
 import { createApiClient } from '@user/services/apiClient'
+import type { SelectOption } from '@admin/index'
 
 const api = createApiClient()
 
@@ -38,9 +39,16 @@ export interface SingleResponse<T> {
   data: T
 }
 
+export interface LanguageOptionsResponse {
+  data: SelectOption[]
+}
+
 export const languageService = {
   getAll(params?: { search?: string; sort?: string; direction?: string; page?: number }) {
     return api.get<PaginatedResponse<Language>>('/api/admin/languages', { params })
+  },
+  getOptions() {
+    return api.get<LanguageOptionsResponse>('/api/admin/languages/options')
   },
   getById(id: number | string) {
     return api.get<SingleResponse<Language>>(`/api/admin/languages/${id}`)
