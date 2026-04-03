@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, Label } from '@admin'
+import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, Label, toastService } from '@admin'
 import TranslationRepeater from '../../components/TranslationRepeater.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { reactive, ref, onMounted } from 'vue'
@@ -64,6 +64,7 @@ const handleSubmit = async () => {
     isSaving.value = true
     const id = route.params.id as string
     await languageService.update(id, form)
+    toastService.success('Nyelv sikeresen frissítve')
     router.push('/admin/language')
   } catch (error) {
     console.error('Hiba a nyelv frissítésekor:', error)
