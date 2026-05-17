@@ -54,8 +54,22 @@ const handleRemoveLanguage = (id: number) => {
 const handleSubmit = async () => {
   try {
     isSaving.value = true
-    await languageService.create(form)
+    const response: any = await languageService.create(form)
     toastService.success('Nyelv sikeresen létrehozva')
+
+    const createdLanguageId = response?.data?.data?.id ?? response?.data?.id ?? response?.id
+
+    if (createdLanguageId !== undefined && createdLanguageId !== null) {
+      await router.push({
+        name: 'language-edit',
+        params: {
+          id: String(createdLanguageId),
+        },
+      })
+
+      return
+    }
+
     router.push('/admin/language')
   } catch (error) {
     console.error('Hiba a nyelv létrehozásakor:', error)
