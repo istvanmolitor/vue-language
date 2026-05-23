@@ -1,5 +1,5 @@
 import { createApiClient } from '@user/services/apiClient'
-import type { SelectOption } from '@admin/index'
+import type { SelectOption } from '@admin'
 
 const api = createApiClient()
 
@@ -49,6 +49,9 @@ export const languageService = {
   },
   getOptions() {
     return api.get<LanguageOptionsResponse>('/api/admin/languages/options')
+  },
+  searchForSelect(params?: { search?: string; page?: number; per_page?: number; include_disabled?: boolean }) {
+    return api.get<PaginatedResponse<Language>>('/api/admin/languages/select', { params })
   },
   getById(id: number | string) {
     return api.get<SingleResponse<Language>>(`/api/admin/languages/${id}`)
