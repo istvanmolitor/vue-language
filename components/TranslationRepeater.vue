@@ -1,29 +1,58 @@
 <script setup lang="ts">
-import type { Language } from '../services/languageService'
+import { computed, ref } from 'vue'
 import { Button } from '@admin'
+import LanguageSelector from './LanguageSelector.vue'
+
+interface TranslationLanguage {
+  id?: number
+  code: string
+  name?: string
+}
 
 const props = defineProps<{
-  languages: Language[]
-  availableLanguages: Language[]
+  languages: TranslationLanguage[]
+  availableLanguages: TranslationLanguage[]
 }>()
+
+const remainingLanguages = computed(() => {
+  const selectedLanguageIds = new Set(props.languages.map((language) => language.id).filter((id): id is number => id !== undefined))
+
+  return props.availableLanguages.filter((language) => !selectedLanguageIds.has(language.id ?? -1))
+})
+
+const selectedLanguageId = ref<number | null>(null)
 
 const emit = defineEmits<{
   (e: 'add', languageId: number): void
   (e: 'remove', languageId: number): void
 }>()
 
-const handleAddLanguage = (event: Event) => {
-  const select = event.target as HTMLSelectElement
-  const id = parseInt(select.value)
-  if (id) {
-    emit('add', id)
-    select.value = ''
+const handleAddLanguage = (languageId: string | number | null) => {
+  const normalizedLanguageId = typeof languageId === 'number' ? languageId : Number(languageId)
+
+  if (!Number.isFinite(normalizedLanguageId) || normalizedLanguageId <= 0) {
+    return
   }
+
+  emit('add', normalizedLanguageId)
+  selectedLanguageId.value = null
 }
 </script>
 
 <template>
   <div class="space-y-6">
+
+    <div v-if="remainingLanguages.length > 0" class="flex items-center gap-4 p-4 border border-dashed rounded-lg bg-slate-50/30">
+      <div class="flex-1">
+        <LanguageSelector
+          :model-value="selectedLanguageId"
+          :languages="remainingLanguages"
+          placeholder="Válassz nyelvet a hozzáadáshoz..."
+          @update:model-value="handleAddLanguage"
+        />
+      </div>
+    </div>
+
     <div v-for="lang in languages" :key="lang.id" class="p-4 border rounded-lg bg-slate-50/50 relative group">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
@@ -48,20 +77,6 @@ const handleAddLanguage = (event: Event) => {
       </div>
       <div class="space-y-4">
         <slot :language="lang" />
-      </div>
-    </div>
-
-    <div v-if="availableLanguages.length > 0" class="flex items-center gap-4 p-4 border border-dashed rounded-lg bg-slate-50/30">
-      <div class="flex-1">
-        <select
-          class="w-full h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-          @change="handleAddLanguage"
-        >
-          <option value="">Válassz nyelvet a hozzáadáshoz...</option>
-          <option v-for="lang in availableLanguages" :key="lang.id" :value="lang.id">
-            {{ lang.name }} ({{ lang.code }})
-          </option>
-        </select>
       </div>
     </div>
   </div>

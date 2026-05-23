@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, Label, toastService } from '@admin'
-import TranslationRepeater from '../../components/TranslationRepeater.vue'
 import { useRouter } from 'vue-router'
 import { reactive, ref, onMounted } from 'vue'
-import { languageService, type Language, type LanguageFormData } from '../../services/languageService'
+import TranslationRepeater from '@language/components/TranslationRepeater.vue'
+import { languageService, type Language, type LanguageFormData } from '@language/services/languageService'
 
 const router = useRouter()
 const isSaving = ref(false)
@@ -23,14 +23,13 @@ const fetchAvailableLanguages = async () => {
     isLoading.value = true
     const { data } = await languageService.getCreateData()
     availableLanguages.value = data.availableLanguages
+    selectedLanguages.value = [...availableLanguages.value]
 
-    // Kezdetben csak az alapértelmezett (vagy első) nyelvet adjuk hozzá, ha van
-    if (availableLanguages.value.length > 0) {
-      const firstLang = availableLanguages.value[0]
-      if (firstLang && firstLang.id) {
-        handleAddLanguage(firstLang.id)
+    selectedLanguages.value.forEach((language) => {
+      if (language.id) {
+        form.translations[language.id] = { name: '' }
       }
-    }
+    })
   } catch (error) {
     console.error('Hiba a nyelvek betöltésekor:', error)
   } finally {
