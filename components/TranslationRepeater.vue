@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { Button } from '@admin'
+import { Button, LoadingSpinner } from '@admin'
 import LanguageSelector from './LanguageSelector.vue'
 import { languageService, type Language } from '../services/languageService'
 
@@ -155,8 +155,8 @@ onMounted(() => {
 
 <template>
   <div class="space-y-6">
-    <div v-if="isLoading" class="flex justify-center py-8">
-      Betöltés...
+    <div v-if="isLoading" class="py-8">
+      <LoadingSpinner label="Betoltes..." />
     </div>
 
     <template v-else>
