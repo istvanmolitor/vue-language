@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, Label, toastService } from '@admin'
+import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, Label, toastService, LoadingSpinner } from '@admin'
 import { useRouter } from 'vue-router'
 import { reactive, ref, onMounted } from 'vue'
 import TranslationRepeater from '@language/components/TranslationRepeater.vue'
@@ -99,9 +99,7 @@ onMounted(() => {
       <Button variant="outline" @click="goBack">Vissza</Button>
     </div>
 
-    <div v-if="isLoading" class="flex justify-center py-8">
-      Betöltés...
-    </div>
+    <div v-if="isLoading" class="flex justify-center py-8"><LoadingSpinner label="Betöltés..." /></div>
 
     <Card v-else>
       <CardHeader>

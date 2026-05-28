@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import Checkbox from '@admin/components/ui/Checkbox.vue'
 import Modal from '@admin/components/ui/Modal.vue'
+import LoadingSpinner from '@admin/components/ui/LoadingSpinner.vue'
 import { languageService, type Language } from '../services/languageService'
 
 interface Props {
@@ -272,9 +273,7 @@ const clearSelection = (): void => {
         </div>
 
         <div class="max-h-96 overflow-y-auto rounded-md border p-1">
-          <div v-if="isLoading" class="px-3 py-2 text-sm text-muted-foreground">
-            Betöltés...
-          </div>
+          <div v-if="isLoading" class="px-3 py-2 text-sm text-muted-foreground"><LoadingSpinner label="Betöltés..." /></div>
 
           <div v-else-if="normalizedLanguages.length === 0" class="px-3 py-2 text-sm text-muted-foreground">
             {{ emptyMessage }}
