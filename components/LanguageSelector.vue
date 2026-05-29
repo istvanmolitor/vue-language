@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import Checkbox from '@admin/components/ui/Checkbox.vue'
 import Modal from '@admin/components/ui/Modal.vue'
 import LoadingSpinner from '@admin/components/ui/LoadingSpinner.vue'
+import Icon from '@admin/components/ui/Icon.vue'
 import { languageService, type Language } from '../services/languageService'
 
 interface Props {
@@ -287,23 +288,15 @@ const clearSelection = (): void => {
             :class="{ 'bg-accent text-accent-foreground': modelValue === language.id }"
             @click="selectLanguage(language.id)"
           >
-            <span class="min-w-0 flex-1">
-              <span class="block truncate font-medium">{{ language.name }}</span>
-              <span class="block truncate text-xs text-muted-foreground">
-                {{ language.code }}
-                <span v-if="!language.isEnabled">- Letiltva</span>
-              </span>
-            </span>
+             <span class="min-w-0 flex-1">
+               <span class="block truncate font-medium">{{ language.name }}</span>
+               <span class="block truncate text-xs text-muted-foreground">
+                 {{ language.code }}
+                 <span v-if="!language.isEnabled">- Letiltva</span>
+               </span>
+             </span>
 
-            <svg
-              v-if="modelValue === language.id"
-              class="h-4 w-4 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
+             <Icon v-if="modelValue === language.id" name="check" class="h-4 w-4 shrink-0" />
           </button>
         </div>
       </div>
