@@ -17,7 +17,8 @@ export class LanguageMenuBuilder extends MenuBuilder {
       title: 'Nyelvek',
       path: '/admin/language',
       icon: Globe,
-      order: 30
+      order: 30,
+      permission: 'language'
     })
 
     return menu
