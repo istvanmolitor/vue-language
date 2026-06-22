@@ -16,7 +16,6 @@ const pagination = ref<PaginationMeta>({
 })
 
 const columns: Column<Language>[] = [
-  { key: 'id', label: 'ID', sortable: true, width: '80px' },
   { key: 'code', label: 'Kód', sortable: true, width: '100px' },
   { key: 'name', label: 'Név', sortable: true },
   { key: 'enabled', label: 'Engedélyezve', sortable: true, width: '150px' },
