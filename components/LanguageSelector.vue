@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import Checkbox from '@admin/components/ui/Checkbox.vue'
 import Modal from '@admin/components/ui/Modal.vue'
 import LoadingSpinner from '@admin/components/ui/LoadingSpinner.vue'
@@ -15,6 +15,7 @@ interface Props {
   emptyValue?: number | null
   disabled?: boolean
   required?: boolean
+  autoSelectDefault?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -26,6 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
   emptyValue: null,
   disabled: false,
   required: false,
+  autoSelectDefault: false,
 })
 
 const emit = defineEmits<{
@@ -183,6 +185,21 @@ watch(includeDisabled, () => {
 
   clearSearchTimeout()
   void fetchLanguages(search.value)
+})
+
+onMounted(async () => {
+  if (props.autoSelectDefault && (props.modelValue === null || props.modelValue === props.emptyValue)) {
+    try {
+      const response = await languageService.getDefault()
+      const defaultLanguage = response.data.data
+      if (defaultLanguage?.id) {
+        emit('update:modelValue', defaultLanguage.id)
+        selectedLanguageData.value = defaultLanguage
+      }
+    } catch {
+      // no default language found
+    }
+  }
 })
 
 onBeforeUnmount(() => {

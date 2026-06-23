@@ -53,6 +53,9 @@ export const languageService = {
   searchForSelect(params?: { search?: string; page?: number; per_page?: number; include_disabled?: boolean }) {
     return api.get<PaginatedResponse<Language>>('/api/admin/languages/select', { params })
   },
+  getDefault() {
+    return api.get<SingleResponse<Language>>('/api/admin/languages/default')
+  },
   getById(id: number | string) {
     return api.get<SingleResponse<Language>>(`/api/admin/languages/${id}`)
   },
