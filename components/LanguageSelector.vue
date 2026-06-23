@@ -9,7 +9,6 @@ import { languageService, type Language } from '../services/languageService'
 interface Props {
   id?: string
   modelValue?: number | null
-  options?: Language[]
   placeholder?: string
   searchPlaceholder?: string
   emptyMessage?: string
@@ -21,7 +20,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   id: undefined,
   modelValue: null,
-  options: () => [],
   placeholder: 'Válassz nyelvet...',
   searchPlaceholder: 'Keresés kód alapján...',
   emptyMessage: 'Nincs találat.',
@@ -46,7 +44,7 @@ const isModalOpen = ref(false)
 const isLoading = ref(false)
 const search = ref('')
 const includeDisabled = ref(false)
-const languages = ref<Language[]>([...props.options])
+const languages = ref<Language[]>([])
 const selectedLanguageData = ref<Language | null>(null)
 const modalPerPage = 500
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
@@ -152,15 +150,6 @@ const fetchSelectedLanguage = async (languageId: number): Promise<void> => {
   }
 }
 
-watch(
-  () => props.options,
-  (value) => {
-    if (value.length > 0) {
-      setLanguages(value)
-    }
-  },
-  { deep: true, immediate: true },
-)
 
 watch(
   () => props.modelValue,
