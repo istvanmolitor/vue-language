@@ -119,7 +119,7 @@ onMounted(() => {
         </div>
 
         <div class="flex items-center space-x-2">
-          <Checkbox id="enabled" :checked="form.enabled" @update:checked="(v: boolean) => form.enabled = v" />
+          <Checkbox id="enabled" v-model="form.enabled" />
           <Label for="enabled" class="text-sm font-medium">Engedélyezve</Label>
         </div>
 
