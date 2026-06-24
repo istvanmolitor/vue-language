@@ -105,12 +105,12 @@ onMounted(() => {
       <CardContent class="space-y-6">
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-2">
-            <Label for="code" class="text-sm font-medium">Kód (pl. hu, en)</Label>
+            <Label for="code">Kód (pl. hu, en)</Label>
             <Input id="code" v-model="form.code" placeholder="hu" />
           </div>
           <div class="flex items-center space-x-2 pt-8">
             <Checkbox id="enabled" v-model="form.enabled" />
-            <Label for="enabled" class="text-sm font-medium">Engedélyezve</Label>
+            <Label for="enabled">Engedélyezve</Label>
           </div>
         </div>
 
@@ -124,7 +124,7 @@ onMounted(() => {
           >
             <template #default="{ language }">
               <div class="space-y-2" v-if="language.id">
-                <Label :for="'lang-' + language.id" class="text-sm font-medium">Név</Label>
+                <Label :for="'lang-' + language.id">Név</Label>
                 <Input :id="'lang-' + language.id" v-model="getTranslation(language.id).name" />
               </div>
             </template>
