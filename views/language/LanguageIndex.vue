@@ -15,11 +15,7 @@ const pagination = ref<PaginationMeta>({
   total: 0
 })
 
-const columns: Column<Language>[] = [
-  { key: 'code', label: 'Kód', sortable: true, width: '100px' },
-  { key: 'name', label: 'Név', sortable: true },
-  { key: 'enabled', label: 'Engedélyezve', sortable: true, width: '150px' },
-]
+const columns = ref<Column[]>([])
 
 const fetchLanguages = async (params: {
   search?: string
@@ -32,6 +28,7 @@ const fetchLanguages = async (params: {
     const response = await languageService.getAll(params)
     languages.value = response.data.data
     pagination.value = response.data.meta
+    columns.value = (response.data.columns ?? []) as Column[]
   } catch (error) {
     console.error('Hiba a nyelvek betöltésekor:', error)
   } finally {
