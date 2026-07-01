@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { Button, LoadingSpinner } from '@admin'
-import Icon from '@admin/components/ui/Icon.vue'
-import LanguageSelector from './LanguageSelector.vue'
+import { type Ref, onMounted, ref, watch } from 'vue'
 import { languageService, type Language } from '../services/languageService'
+import LanguageSelector from './LanguageSelector.vue'
 
 type TranslationRecord = Record<string, string>
 type TranslationMap = Record<number, TranslationRecord>
 
-const modelValue = defineModel<TranslationMap>({
-  default: {},
-})
+const modelValue = defineModel<TranslationMap>({ default: {} }) as Ref<TranslationMap>
 
 const props = withDefaults(defineProps<{
   fields: string[]
@@ -18,191 +14,81 @@ const props = withDefaults(defineProps<{
   fields: () => [],
 })
 
+interface LanguageData {
+  language: Language
+  fields: Record<string, string>
+}
+
 defineSlots<{
-  default(props: {
-    language: Language & { id: number }
-    translation: TranslationRecord
-    fields: string[]
-  }): void
+  default(props: { item: LanguageData; update: (field: string, value: string) => void }): void
 }>()
 
-const availableLanguages = ref<Language[]>([])
+const allLanguages = ref<Language[]>([])
+const fieldData = ref<LanguageData[]>([])
 const selectedLanguageId = ref<number | null>(null)
-const isLoading = ref(true)
-const hasInitializedTranslations = ref(false)
 
-const cloneTranslations = (translations: TranslationMap): TranslationMap => {
-  return Object.entries(translations).reduce<TranslationMap>((result, [languageId, translation]) => {
-    result[Number(languageId)] = { ...translation }
-    return result
-  }, {})
-}
+const translations = (): TranslationMap => modelValue.value as TranslationMap
 
-const createEmptyTranslation = (): TranslationRecord => {
-  return props.fields.reduce<TranslationRecord>((translation, field) => {
-    translation[field] = ''
-    return translation
-  }, {})
-}
+const updateFieldData = (item: LanguageData, field: string, value: string): void => {
+  item.fields = { ...item.fields, [field]: value }
 
-const emitTranslations = (translations: TranslationMap): void => {
-  modelValue.value = translations
-}
-
-const getCurrentTranslations = (): TranslationMap => {
-  return modelValue.value ?? {}
-}
-
-const getTranslation = (languageId: number): TranslationRecord => {
-  return {
-    ...createEmptyTranslation(),
-    ...(getCurrentTranslations()[languageId] ?? {}),
-  }
-}
-
-const createTranslationProxy = (languageId: number): TranslationRecord => {
-  const translation = getTranslation(languageId)
-
-  return new Proxy(translation, {
-    set(target, property, value) {
-      target[String(property)] = value === null || value === undefined ? '' : String(value)
-
-      emitTranslations({
-        ...cloneTranslations(getCurrentTranslations()),
-        [languageId]: {
-          ...createEmptyTranslation(),
-          ...target,
-        },
-      })
-
-      return true
+  const languageId = item.language.id!
+  modelValue.value = {
+    ...translations(),
+    [languageId]: {
+      ...(translations()[languageId] ?? {}),
+      [field]: value,
     },
-  })
+  } as TranslationMap
 }
 
-const selectedLanguages = computed(() => {
-  const selectedLanguageIds = new Set(Object.keys(getCurrentTranslations()).map((languageId) => Number(languageId)))
+const hasLanguage = (language: Language): boolean =>
+  fieldData.value.some((fd) => fd.language.id === language.id)
 
-  return availableLanguages.value.filter((language): language is Language & { id: number } => {
-    return typeof language.id === 'number' && selectedLanguageIds.has(language.id)
-  })
-})
+const addLanguageFromTranslations = (language: Language): void => {
+  if (hasLanguage(language)) return
 
-const remainingLanguages = computed(() => {
-  const selectedLanguageIds = new Set(selectedLanguages.value.map((language) => language.id))
-
-  return availableLanguages.value.filter((language): language is Language & { id: number } => {
-    return typeof language.id === 'number' && !selectedLanguageIds.has(language.id)
-  })
-})
-
-const loadLanguages = async (): Promise<void> => {
-  try {
-    isLoading.value = true
-    const { data } = await languageService.getCreateData()
-    availableLanguages.value = data.availableLanguages ?? []
-
-    if (!hasInitializedTranslations.value && Object.keys(getCurrentTranslations()).length === 0 && availableLanguages.value.length > 0) {
-      const initialTranslations = availableLanguages.value.reduce<TranslationMap>((translations, language) => {
-        if (typeof language.id !== 'number') {
-          return translations
-        }
-
-        translations[language.id] = createEmptyTranslation()
-        return translations
-      }, {})
-
-      emitTranslations(initialTranslations)
-    }
-
-    hasInitializedTranslations.value = true
-  } catch (error) {
-    console.error('Hiba a nyelvek betöltésekor:', error)
-  } finally {
-    isLoading.value = false
-  }
+  const existing = translations()[language.id!] ?? {}
+  const fields = Object.fromEntries(props.fields.map((f) => [f, existing[f] ?? '']))
+  fieldData.value.push({ language, fields })
 }
 
-const handleAddLanguage = (languageId: string | number | null): void => {
-  const normalizedLanguageId = typeof languageId === 'number' ? languageId : Number(languageId)
+const addLanguage = (language: Language): void => {
+  if (hasLanguage(language)) return
 
-  if (!Number.isFinite(normalizedLanguageId) || normalizedLanguageId <= 0) {
-    return
-  }
+  const fields = Object.fromEntries(props.fields.map((f) => [f, '']))
+  fieldData.value.push({ language, fields })
+}
 
-  if (selectedLanguages.value.some((language) => language.id === normalizedLanguageId)) {
-    return
-  }
+defineExpose({ addLanguage })
 
-  emitTranslations({
-    ...cloneTranslations(getCurrentTranslations()),
-    [normalizedLanguageId]: createEmptyTranslation(),
-  })
+watch(selectedLanguageId, (id) => {
+  if (id === null) return
 
+  const language = allLanguages.value.find((lang) => lang.id === id)
+  if (!language) return
+
+  addLanguageFromTranslations(language)
   selectedLanguageId.value = null
-}
+})
 
-const handleRemoveLanguage = (languageId: number): void => {
-  const nextTranslations = cloneTranslations(getCurrentTranslations())
-
-  delete nextTranslations[languageId]
-  emitTranslations(nextTranslations)
-}
-
-onMounted(() => {
-  void loadLanguages()
+onMounted(async () => {
+  const { data } = await languageService.getOptions()
+  allLanguages.value = data.data
 })
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div v-if="isLoading" class="py-8">
-      <LoadingSpinner label="Betoltes..." />
-    </div>
+  <div>
+    <LanguageSelector v-model="selectedLanguageId" />
 
-    <template v-else>
-      <div v-if="remainingLanguages.length > 0" class="flex items-center gap-4 rounded-lg border border-dashed bg-slate-50/30 p-4">
-        <div class="flex-1">
-          <LanguageSelector
-            :model-value="selectedLanguageId"
-            :languages="remainingLanguages"
-            placeholder="Válassz nyelvet a hozzáadáshoz..."
-            @update:model-value="handleAddLanguage"
-          />
-        </div>
-      </div>
-
-      <div v-for="lang in selectedLanguages" :key="lang.id" class="group relative rounded-lg border bg-slate-50/50 p-4">
-        <div class="mb-4 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="rounded bg-slate-200 px-2 py-1 text-xs font-bold uppercase text-slate-700">
-              {{ lang.code }}
-            </span>
-            <span class="text-sm font-medium text-slate-500">
-              {{ lang.name || lang.code }}
-            </span>
-          </div>
-
-          <Button
-            variant="destructive"
-            size="sm"
-            type="button"
-            class="h-8 w-8 p-0"
-            @click="handleRemoveLanguage(lang.id)"
-          >
-            <span class="sr-only">Törlés</span>
-            <Icon name="delete" size="16" />
-          </Button>
-        </div>
-
-        <div class="space-y-4">
-          <slot
-            :language="lang"
-            :translation="createTranslationProxy(lang.id)"
-            :fields="fields"
-          />
-        </div>
-      </div>
+    <template v-for="item in fieldData" :key="item.language.id">
+      <slot :item="item" :update="(field: string, value: string) => updateFieldData(item, field, value)" />
     </template>
+
+    <pre>
+      {{ fieldData }}
+    </pre>
+
   </div>
 </template>

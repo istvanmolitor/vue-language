@@ -49,7 +49,7 @@ export const languageService = {
     return api.get<PaginatedResponse<Language>>('/api/admin/languages', { params })
   },
   getOptions() {
-    return api.get<LanguageOptionsResponse>('/api/admin/languages/options')
+    return api.get<{ data: Language[] }>('/api/admin/languages/options')
   },
   searchForSelect(params?: { search?: string; page?: number; per_page?: number; include_disabled?: boolean }) {
     return api.get<PaginatedResponse<Language>>('/api/admin/languages/select', { params })
