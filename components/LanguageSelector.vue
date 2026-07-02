@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import Select from '@admin/components/ui/Select.vue'
-import Label from '@admin/components/ui/Label.vue'
-import FieldError from '@admin/components/ui/FieldError.vue'
 import { languageService, type Language } from '../services/languageService'
 
 const props = withDefaults(defineProps<{
