@@ -48,11 +48,8 @@ export const languageService = {
   getAll(params?: { search?: string; sort?: string; direction?: string; page?: number }) {
     return api.get<PaginatedResponse<Language>>('/api/admin/languages', { params })
   },
-  getOptions() {
-    return api.get<{ data: Language[] }>('/api/admin/languages/options')
-  },
-  searchForSelect(params?: { search?: string; page?: number; per_page?: number; include_disabled?: boolean }) {
-    return api.get<PaginatedResponse<Language>>('/api/admin/languages/select', { params })
+  getForSelect() {
+    return api.get<{ data: Language[] }>('/api/admin/languages/select')
   },
   getDefault() {
     return api.get<SingleResponse<Language>>('/api/admin/languages/default')
