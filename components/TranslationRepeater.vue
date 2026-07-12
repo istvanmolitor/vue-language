@@ -3,6 +3,7 @@ import { type Ref, computed, onMounted, ref } from 'vue'
 import { languageService, type Language } from '../services/languageService'
 import Select from '@admin/components/ui/Select.vue'
 import Modal from '@admin/components/ui/Modal.vue'
+import Icon from '@admin/components/ui/Icon.vue'
 import Button from '@admin/components/ui/button/Button.vue'
 
 type TranslationRecord = Record<string, string>
@@ -45,7 +46,11 @@ const handleSelectLanguage = (languageId: string | number | null): void => {
   isModalOpen.value = false
 }
 
+const canRemoveLanguage = computed(() => addedLanguages.value.length > 1)
+
 const removeLanguage = (languageId: number): void => {
+  if (!canRemoveLanguage.value) return
+
   delete modelValue.value[languageId]
 }
 
@@ -62,7 +67,10 @@ onMounted(async () => {
 
 <template>
   <div class="space-y-4">
-    <Button type="button" @click="isModalOpen = true">Nyelv hozzáadása</Button>
+    <Button type="button" @click="isModalOpen = true">
+      <Icon name="plus" class="h-4 w-4" />
+      Nyelv hozzáadása
+    </Button>
 
     <Modal :show="isModalOpen" title="Nyelv kiválasztása" @close="isModalOpen = false">
       <Select
@@ -78,7 +86,15 @@ onMounted(async () => {
     <div v-for="language in addedLanguages" :key="language.id" class="space-y-2 border-t pt-4">
       <div class="flex items-center justify-between">
         <span class="font-medium">{{ language.name }}</span>
-        <Button type="button" variant="ghost" size="sm" @click="removeLanguage(language.id!)">Eltávolítás</Button>
+        <Button
+          type="button"
+          variant="destructive"
+          size="icon-sm"
+          :disabled="!canRemoveLanguage"
+          @click="removeLanguage(language.id!)"
+        >
+          <Icon name="delete" class="h-4 w-4" />
+        </Button>
       </div>
 
       <slot :language="language" :translation="modelValue[language.id!]" />
