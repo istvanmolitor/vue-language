@@ -47,7 +47,7 @@ const createEmptyTranslation = (): TranslationRecord =>
   Object.fromEntries(props.fields.map((field) => [field, '']))
 
 const addLanguage = (languageId: number | null): void => {
-  if (languageId === null || languageId in modelValue.value) return
+  if (languageId === null || languageId <= 0 || languageId in modelValue.value) return
 
   modelValue.value[languageId] = createEmptyTranslation()
 }

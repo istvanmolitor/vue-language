@@ -80,12 +80,11 @@ onMounted(() => {
         </div>
 
         <TranslationRepeater v-model="form.translations" :fields="['name']">
-          <template #default="{ item, update }">
+          <template #default="{ language, translation }">
             <InputField
-              :id="`lang-${item.language.id}-${item.field}`"
-              :label="`Név (${item.language.code})`"
-              :model-value="item.value"
-              @update:model-value="update(String($event))"
+              :id="`lang-${language.id}-name`"
+              :label="`Név (${language.code})`"
+              v-model="translation.name"
             />
           </template>
         </TranslationRepeater>

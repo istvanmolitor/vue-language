@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, Label, toastService, LoadingSpinner } from '@admin'
+import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, InputField, Label, toastService } from '@admin'
 import { useRouter } from 'vue-router'
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref } from 'vue'
 import TranslationRepeater from '@language/components/TranslationRepeater.vue'
-import { languageService, type Language, type LanguageFormData } from '@language/services/languageService'
+import { languageService, type LanguageFormData } from '@language/services/languageService'
 
 const router = useRouter()
 const isSaving = ref(false)
-const isLoading = ref(true)
-const availableLanguages = ref<Language[]>([])
-const selectedLanguages = ref<Language[]>([])
 
 const form = reactive<LanguageFormData>({
   code: '',
@@ -17,38 +14,6 @@ const form = reactive<LanguageFormData>({
   native_name: '',
   translations: {}
 })
-
-const fetchAvailableLanguages = async () => {
-  try {
-    isLoading.value = true
-    const { data } = await languageService.getCreateData()
-    availableLanguages.value = data.availableLanguages
-    selectedLanguages.value = [...availableLanguages.value]
-
-    selectedLanguages.value.forEach((language) => {
-      if (language.id) {
-        form.translations[language.id] = { name: '' }
-      }
-    })
-  } catch (error) {
-    console.error('Hiba a nyelvek betöltésekor:', error)
-  } finally {
-    isLoading.value = false
-  }
-}
-
-const handleAddLanguage = (id: number) => {
-  const lang = availableLanguages.value.find(l => l.id === id)
-  if (lang && !selectedLanguages.value.find(l => l.id === id)) {
-    selectedLanguages.value.push(lang)
-    form.translations[id] = { name: '' }
-  }
-}
-
-const handleRemoveLanguage = (id: number) => {
-  selectedLanguages.value = selectedLanguages.value.filter(l => l.id !== id)
-  delete form.translations[id]
-}
 
 const handleSubmit = async () => {
   try {
@@ -80,17 +45,6 @@ const handleSubmit = async () => {
 const goBack = () => {
   router.push('/admin/language')
 }
-
-const getTranslation = (id: number) => {
-  if (!form.translations[id]) {
-    form.translations[id] = { name: '' }
-  }
-  return form.translations[id]
-}
-
-onMounted(() => {
-  fetchAvailableLanguages()
-})
 </script>
 
 <template>
@@ -99,9 +53,7 @@ onMounted(() => {
       <Button variant="outline" @click="goBack">Vissza</Button>
     </div>
 
-    <div v-if="isLoading" class="flex justify-center py-8"><LoadingSpinner label="Betöltés..." /></div>
-
-    <Card v-else>
+    <Card>
       <CardHeader>
         <CardTitle>Nyelv adatai</CardTitle>
         <CardDescription>Add meg az új nyelv adatait a létrehozáshoz.</CardDescription>
@@ -123,17 +75,13 @@ onMounted(() => {
           <Label for="enabled">Engedélyezve</Label>
         </div>
 
-        <TranslationRepeater
-          :languages="selectedLanguages"
-          :available-languages="availableLanguages"
-          @add="handleAddLanguage"
-          @remove="handleRemoveLanguage"
-        >
-          <template #default="{ language }">
-            <div class="space-y-2" v-if="language.id">
-              <Label :for="'lang-' + language.id">Név</Label>
-              <Input :id="'lang-' + language.id" v-model="getTranslation(language.id).name" :placeholder="language.name" />
-            </div>
+        <TranslationRepeater v-model="form.translations" :fields="['name']">
+          <template #default="{ language, translation }">
+            <InputField
+              :id="`lang-${language.id}-name`"
+              :label="`Név (${language.code})`"
+              v-model="translation.name"
+            />
           </template>
         </TranslationRepeater>
       </CardContent>
