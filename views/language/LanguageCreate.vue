@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AdminLayout, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, InputField, Label, toastService } from '@admin'
+import { AdminLayout, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CheckboxField, FormButtons, InputField, toastService } from '@admin'
 import { useRouter } from 'vue-router'
 import { reactive, ref } from 'vue'
 import TranslationRepeater from '@language/components/TranslationRepeater.vue'
@@ -59,15 +59,9 @@ const goBack = () => {
         <CardDescription>Add meg az új nyelv adatait a létrehozáshoz.</CardDescription>
       </CardHeader>
       <CardContent class="space-y-6">
-        <div class="grid grid-cols-2 gap-4">
-          <InputField id="code" label="Kód (pl. hu, en)" v-model="form.code" placeholder="hu" />
-          <InputField id="native_name" label="Név (saját nyelven)" v-model="form.native_name" placeholder="Magyar" />
-        </div>
-
-        <div class="flex items-center space-x-2">
-          <Checkbox id="enabled" v-model="form.enabled" />
-          <Label for="enabled">Engedélyezve</Label>
-        </div>
+        <InputField id="code" label="Kód (pl. hu, en)" v-model="form.code" placeholder="hu" />
+        <InputField id="native_name" label="Név (saját nyelven)" v-model="form.native_name" placeholder="Magyar" />
+        <CheckboxField id="enabled" label="Engedélyezve" v-model="form.enabled" />
 
         <TranslationRepeater v-model="form.translations" #default="{ language, translation }" :fields="['name']">
           <InputField
