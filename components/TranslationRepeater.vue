@@ -3,6 +3,7 @@ import { type Ref, computed, onMounted, ref } from 'vue'
 import { languageService, type Language } from '../services/languageService'
 import Select from '@admin/components/ui/Select.vue'
 import Modal from '@admin/components/ui/Modal.vue'
+import CheckboxField from '@admin/components/ui/CheckboxField.vue'
 import Icon from '@admin/components/ui/Icon.vue'
 import Button from '@admin/components/ui/button/Button.vue'
 import Card from '@admin/components/ui/Card.vue'
@@ -25,13 +26,19 @@ defineSlots<{
 
 const allLanguages = ref<Language[]>([])
 const isModalOpen = ref(false)
+const showDisabledLanguages = ref(false)
 
 const addedLanguages = computed<Language[]>(() =>
   allLanguages.value.filter((language) => language.id !== undefined && language.id in modelValue.value)
 )
 
 const availableLanguages = computed<Language[]>(() =>
-  allLanguages.value.filter((language) => language.id !== undefined && !(language.id in modelValue.value))
+  allLanguages.value.filter(
+    (language) =>
+      language.id !== undefined &&
+      !(language.id in modelValue.value) &&
+      (showDisabledLanguages.value || language.enabled)
+  )
 )
 
 const availableLanguageOptions = computed(() => availableLanguages.value as unknown as Array<Record<string, unknown>>)
@@ -48,6 +55,12 @@ const addLanguage = (languageId: number | null): void => {
 const handleSelectLanguage = (languageId: string | number | null): void => {
   addLanguage(languageId === null ? null : Number(languageId))
   isModalOpen.value = false
+  showDisabledLanguages.value = false
+}
+
+const closeModal = (): void => {
+  isModalOpen.value = false
+  showDisabledLanguages.value = false
 }
 
 const canRemoveLanguage = computed(() => addedLanguages.value.length > 1)
@@ -80,15 +93,22 @@ onMounted(async () => {
     </CardHeader>
 
     <CardContent class="space-y-4">
-      <Modal :show="isModalOpen" title="Nyelv kiválasztása" @close="isModalOpen = false">
-        <Select
-          :model-value="null"
-          :options="availableLanguageOptions"
-          label-field="name"
-          value-field="id"
-          placeholder="Válassz nyelvet..."
-          @update:model-value="handleSelectLanguage"
-        />
+      <Modal :show="isModalOpen" title="Nyelv kiválasztása" @close="closeModal">
+        <div class="space-y-4">
+          <CheckboxField
+            id="show-disabled-languages"
+            v-model="showDisabledLanguages"
+            label="Letiltott nyelvek megjelenítése"
+          />
+          <Select
+            :model-value="null"
+            :options="availableLanguageOptions"
+            label-field="name"
+            value-field="id"
+            placeholder="Válassz nyelvet..."
+            @update:model-value="handleSelectLanguage"
+          />
+        </div>
       </Modal>
 
       <Card v-for="language in addedLanguages" :key="language.id">
