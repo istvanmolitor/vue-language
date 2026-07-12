@@ -75,14 +75,12 @@ const goBack = () => {
           <Label for="enabled">Engedélyezve</Label>
         </div>
 
-        <TranslationRepeater v-model="form.translations" :fields="['name']">
-          <template #default="{ language, translation }">
-            <InputField
-              :id="`lang-${language.id}-name`"
-              :label="`Név (${language.code})`"
-              v-model="translation.name"
-            />
-          </template>
+        <TranslationRepeater v-model="form.translations" #default="{ language, translation }" :fields="['name']">
+          <InputField
+            :id="`lang-${language.id}-name`"
+            :label="`Név (${language.code})`"
+            v-model="translation.name"
+          />
         </TranslationRepeater>
       </CardContent>
       <CardFooter>

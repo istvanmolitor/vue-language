@@ -71,14 +71,12 @@ onMounted(() => {
         <InputField id="code" label="Kód (pl. hu, en)" v-model="form.code" placeholder="hu" />
         <CheckboxField id="enabled" label="Engedélyezve" v-model="form.enabled" />
 
-        <TranslationRepeater v-model="form.translations" :fields="['name']">
-          <template #default="{ language, translation }">
-            <InputField
-              :id="`lang-${language.id}-name`"
-              :label="`Név (${language.code})`"
-              v-model="translation.name"
-            />
-          </template>
+        <TranslationRepeater v-model="form.translations" #default="{ language, translation }" :fields="['name']">
+          <InputField
+            :id="`lang-${language.id}-name`"
+            :label="`Név (${language.code})`"
+            v-model="translation.name"
+          />
         </TranslationRepeater>
       </CardContent>
       <CardFooter>
