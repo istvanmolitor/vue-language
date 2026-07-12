@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AdminLayout, Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, InputField, Label, toastService } from '@admin'
+import { AdminLayout, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, InputField, Label, toastService } from '@admin'
 import { useRouter } from 'vue-router'
 import { reactive, ref } from 'vue'
 import TranslationRepeater from '@language/components/TranslationRepeater.vue'
@@ -60,14 +60,8 @@ const goBack = () => {
       </CardHeader>
       <CardContent class="space-y-6">
         <div class="grid grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <Label for="code">Kód (pl. hu, en)</Label>
-            <Input id="code" v-model="form.code" placeholder="hu" />
-          </div>
-          <div class="space-y-2">
-            <Label for="native_name">Név (saját nyelven)</Label>
-            <Input id="native_name" v-model="form.native_name" placeholder="Magyar" />
-          </div>
+          <InputField id="code" label="Kód (pl. hu, en)" v-model="form.code" placeholder="hu" />
+          <InputField id="native_name" label="Név (saját nyelven)" v-model="form.native_name" placeholder="Magyar" />
         </div>
 
         <div class="flex items-center space-x-2">
