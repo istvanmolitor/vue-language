@@ -5,6 +5,10 @@ import Select from '@admin/components/ui/Select.vue'
 import Modal from '@admin/components/ui/Modal.vue'
 import Icon from '@admin/components/ui/Icon.vue'
 import Button from '@admin/components/ui/button/Button.vue'
+import Card from '@admin/components/ui/Card.vue'
+import CardHeader from '@admin/components/ui/CardHeader.vue'
+import CardTitle from '@admin/components/ui/CardTitle.vue'
+import CardContent from '@admin/components/ui/CardContent.vue'
 
 type TranslationRecord = Record<string, string>
 type TranslationMap = Record<number, TranslationRecord>
@@ -66,38 +70,45 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="space-y-4">
-    <Button type="button" @click="isModalOpen = true">
-      <Icon name="plus" class="h-4 w-4" />
-      Nyelv hozzáadása
-    </Button>
+  <Card>
+    <CardHeader class="flex flex-row items-center justify-between">
+      <CardTitle>Fordítások</CardTitle>
+      <Button type="button" @click="isModalOpen = true">
+        <Icon name="plus" class="h-4 w-4" />
+        Nyelv hozzáadása
+      </Button>
+    </CardHeader>
 
-    <Modal :show="isModalOpen" title="Nyelv kiválasztása" @close="isModalOpen = false">
-      <Select
-        :model-value="null"
-        :options="availableLanguageOptions"
-        label-field="name"
-        value-field="id"
-        placeholder="Válassz nyelvet..."
-        @update:model-value="handleSelectLanguage"
-      />
-    </Modal>
+    <CardContent class="space-y-4">
+      <Modal :show="isModalOpen" title="Nyelv kiválasztása" @close="isModalOpen = false">
+        <Select
+          :model-value="null"
+          :options="availableLanguageOptions"
+          label-field="name"
+          value-field="id"
+          placeholder="Válassz nyelvet..."
+          @update:model-value="handleSelectLanguage"
+        />
+      </Modal>
 
-    <div v-for="language in addedLanguages" :key="language.id" class="space-y-2 border-t pt-4">
-      <div class="flex items-center justify-between">
-        <span class="font-medium">{{ language.name }}</span>
-        <Button
-          type="button"
-          variant="destructive"
-          size="icon-sm"
-          :disabled="!canRemoveLanguage"
-          @click="removeLanguage(language.id!)"
-        >
-          <Icon name="delete" class="h-4 w-4" />
-        </Button>
-      </div>
+      <Card v-for="language in addedLanguages" :key="language.id">
+        <CardHeader class="flex flex-row items-center justify-between">
+          <CardTitle>{{ language.name }}</CardTitle>
+          <Button
+            type="button"
+            variant="destructive"
+            size="icon-sm"
+            :disabled="!canRemoveLanguage"
+            @click="removeLanguage(language.id!)"
+          >
+            <Icon name="delete" class="h-4 w-4" />
+          </Button>
+        </CardHeader>
 
-      <slot :language="language" :translation="modelValue[language.id!]" />
-    </div>
-  </div>
+        <CardContent>
+          <slot :language="language" :translation="modelValue[language.id!]" />
+        </CardContent>
+      </Card>
+    </CardContent>
+  </Card>
 </template>

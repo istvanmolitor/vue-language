@@ -79,19 +79,16 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="space-y-4 pt-4 border-t">
-          <h3 class="text-lg font-medium mb-4">Fordítások</h3>
-          <TranslationRepeater v-model="form.translations" :fields="['name']">
-            <template #default="{ item, update }">
-              <InputField
-                :id="`lang-${item.language.id}-${item.field}`"
-                :label="`Név (${item.language.code})`"
-                :model-value="item.value"
-                @update:model-value="update(String($event))"
-              />
-            </template>
-          </TranslationRepeater>
-        </div>
+        <TranslationRepeater v-model="form.translations" :fields="['name']">
+          <template #default="{ item, update }">
+            <InputField
+              :id="`lang-${item.language.id}-${item.field}`"
+              :label="`Név (${item.language.code})`"
+              :model-value="item.value"
+              @update:model-value="update(String($event))"
+            />
+          </template>
+        </TranslationRepeater>
       </CardContent>
       <CardFooter>
         <FormButtons

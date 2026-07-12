@@ -123,22 +123,19 @@ onMounted(() => {
           <Label for="enabled">Engedélyezve</Label>
         </div>
 
-        <div class="space-y-4 pt-4 border-t">
-          <h3 class="text-lg font-medium mb-4">Fordítások</h3>
-          <TranslationRepeater
-            :languages="selectedLanguages"
-            :available-languages="availableLanguages"
-            @add="handleAddLanguage"
-            @remove="handleRemoveLanguage"
-          >
-            <template #default="{ language }">
-              <div class="space-y-2" v-if="language.id">
-                <Label :for="'lang-' + language.id">Név</Label>
-                <Input :id="'lang-' + language.id" v-model="getTranslation(language.id).name" :placeholder="language.name" />
-              </div>
-            </template>
-          </TranslationRepeater>
-        </div>
+        <TranslationRepeater
+          :languages="selectedLanguages"
+          :available-languages="availableLanguages"
+          @add="handleAddLanguage"
+          @remove="handleRemoveLanguage"
+        >
+          <template #default="{ language }">
+            <div class="space-y-2" v-if="language.id">
+              <Label :for="'lang-' + language.id">Név</Label>
+              <Input :id="'lang-' + language.id" v-model="getTranslation(language.id).name" :placeholder="language.name" />
+            </div>
+          </template>
+        </TranslationRepeater>
       </CardContent>
       <CardFooter>
         <FormButtons
