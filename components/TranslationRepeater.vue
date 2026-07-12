@@ -52,6 +52,11 @@ const removeLanguage = (languageId: number): void => {
 onMounted(async () => {
   const { data } = await languageService.getForSelect()
   allLanguages.value = data.data
+
+  if (Object.keys(modelValue.value).length === 0) {
+    const { data: defaultLanguage } = await languageService.getDefault()
+    addLanguage(defaultLanguage.data.id ?? null)
+  }
 })
 </script>
 
