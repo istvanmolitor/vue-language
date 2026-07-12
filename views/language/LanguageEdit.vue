@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AdminLayout, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, FormButtons, InputField, toastService, LoadingSpinner } from '@admin'
+import { AdminLayout, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CheckboxField, FormButtons, InputField, toastService, LoadingSpinner } from '@admin'
 import TranslationRepeater from '../../components/TranslationRepeater.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { reactive, ref, onMounted } from 'vue'
@@ -68,16 +68,8 @@ onMounted(() => {
         <CardDescription>Módosítsd a nyelv adatait.</CardDescription>
       </CardHeader>
       <CardContent class="space-y-6">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <Label for="code">Kód (pl. hu, en)</Label>
-            <Input id="code" v-model="form.code" placeholder="hu" />
-          </div>
-          <div class="flex items-center space-x-2 pt-8">
-            <Checkbox id="enabled" v-model="form.enabled" />
-            <Label for="enabled">Engedélyezve</Label>
-          </div>
-        </div>
+        <InputField id="code" label="Kód (pl. hu, en)" v-model="form.code" placeholder="hu" />
+        <CheckboxField id="enabled" label="Engedélyezve" v-model="form.enabled" />
 
         <TranslationRepeater v-model="form.translations" :fields="['name']">
           <template #default="{ language, translation }">
